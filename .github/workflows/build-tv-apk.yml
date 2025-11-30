@@ -29,14 +29,19 @@ jobs:
           
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-
-        - name: Fix androidsvg duplicate
-  run: |
-    cd android
-    echo "configurations.all { exclude group: 'com.caverock', module: 'androidsvg' }" >> app/build.gradle
         
       - name: Prebuild Android
         run: npx expo prebuild --platform android --clean
+        
+      - name: Fix duplicate androidsvg library
+        run: |
+          cd android/app
+          cat >> build.gradle << 'EOF'
+          
+          configurations.all {
+              exclude group: 'com.caverock', module: 'androidsvg'
+          }
+          EOF
         
       - name: Make gradlew executable
         run: chmod +x android/gradlew
