@@ -11,6 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo apt-get clean
+          df -h
+          
       - name: Checkout repository
         uses: actions/checkout@v4
         
@@ -47,7 +56,6 @@ jobs:
       - name: Configure build for armeabi-v7a only
         run: |
           cd android/app
-          # Update build.gradle to build only armeabi-v7a
           sed -i "s/ndk {/ndk {\n            abiFilters 'armeabi-v7a'/" build.gradle
         
       - name: Increase Gradle memory
