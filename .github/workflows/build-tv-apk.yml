@@ -36,15 +36,14 @@ jobs:
       - name: Fix duplicate androidsvg library
         run: |
           cd android
-          # Add resolution strategy to project-level build.gradle
-          cat >> build.gradle << 'EOF'
-          
-          allprojects {
-              configurations.all {
-                  exclude group: 'com.caverock', module: 'androidsvg'
-              }
-          }
-          EOF
+          # Add resolution strategy to app-level build.gradle
+          sed -i '/dependencies {/i \
+          configurations.all {\
+              resolutionStrategy {\
+                  force "com.caverock:androidsvg-aar:1.4"\
+              }\
+              exclude group: "com.caverock", module: "androidsvg"\
+          }' app/build.gradle
         
       - name: Make gradlew executable
         run: chmod +x android/gradlew
