@@ -35,11 +35,14 @@ jobs:
         
       - name: Fix duplicate androidsvg library
         run: |
-          cd android/app
+          cd android
+          # Add resolution strategy to project-level build.gradle
           cat >> build.gradle << 'EOF'
           
-          configurations.all {
-              exclude group: 'com.caverock', module: 'androidsvg'
+          allprojects {
+              configurations.all {
+                  exclude group: 'com.caverock', module: 'androidsvg'
+              }
           }
           EOF
         
@@ -49,7 +52,7 @@ jobs:
       - name: Build APK
         run: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --stacktrace
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
